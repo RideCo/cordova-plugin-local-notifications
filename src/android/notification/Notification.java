@@ -54,6 +54,8 @@ import static android.support.v4.app.NotificationCompat.PRIORITY_HIGH;
 import static android.support.v4.app.NotificationManagerCompat.IMPORTANCE_MAX;
 import static android.support.v4.app.NotificationManagerCompat.IMPORTANCE_MIN;
 
+import de.appplant.cordova.plugin.notification.util.PendingIntentUtil;
+
 /**
  * Wrapper class around OS notification class. Handles basic operations
  * like show, delete, cancel for a single local notification instance.
@@ -217,8 +219,9 @@ public final class Notification {
             if (!date.after(new Date()) && trigger(intent, receiver))
                 continue;
 
+            int pendingIntentValueFLAG = PendingIntentUtil.getPendingIntentFlag(FLAG_CANCEL_CURRENT);
             PendingIntent pi = PendingIntent.getBroadcast(
-                    context, 0, intent, FLAG_CANCEL_CURRENT);
+                    context, 0, intent, pendingIntentValueFLAG);
 
             try {
                 switch (options.getPrio()) {
@@ -304,8 +307,9 @@ public final class Notification {
         for (String action : actions) {
             Intent intent = new Intent(action);
 
+            int pendingIntentValueFLAG = PendingIntentUtil.getPendingIntentFlag(0);
             PendingIntent pi = PendingIntent.getBroadcast(
-                    context, 0, intent, 0);
+                    context, 0, intent, pendingIntentValueFLAG);
 
             if (pi != null) {
                 getAlarmMgr().cancel(pi);

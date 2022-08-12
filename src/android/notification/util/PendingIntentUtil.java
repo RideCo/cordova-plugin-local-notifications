@@ -1,4 +1,8 @@
 /*
+ * Apache 2.0 License
+ *
+ * Copyright (c) Sebastian Katzer 2017
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apache License
  * Version 2.0 (the 'License'). You may not use this file except in
@@ -15,18 +19,26 @@
  * limitations under the License.
  */
 
-repositories {
-    mavenCentral()
-    jcenter()
-    maven {
-        url "https://maven.google.com"
+package de.appplant.cordova.plugin.notification.util;
+
+import android.app.PendingIntent;
+
+/**
+ * Util class to obtain the most appropriate PendingIntent flag based on
+ * Build SDK_INT version.
+ */
+public class PendingIntentUtil {
+
+    /**
+     * Return the Pending Intent appropriate flag.
+     *
+     * @param flag The current flag being used.
+     */
+    public static int getPendingIntentFlag(int flag) {
+        int pendingIntentValueFLAG = flag;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            pendingIntentValueFLAG = pendingIntentValueFLAG | PendingIntent.FLAG_IMMUTABLE;
+        }
+        return pendingIntentValueFLAG;
     }
-}
-
-if (!project.ext.has('appShortcutBadgerVersion')) {
-    ext.appShortcutBadgerVersion = '1.1.19'
-}
-
-dependencies {
-    implementation "me.leolin:ShortcutBadger:${appShortcutBadgerVersion}@aar"
 }
