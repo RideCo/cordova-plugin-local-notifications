@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.appplant.cordova.plugin.notification.action.Action;
+import de.appplant.cordova.plugin.notification.util.PendingIntentUtil;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static de.appplant.cordova.plugin.notification.Notification.EXTRA_UPDATE;
@@ -123,7 +124,7 @@ public final class Builder {
             return new Notification(context, options);
         }
 
-        Uri sound     = options.getSound();
+        Uri sound = options.getSound();
         Bundle extras = new Bundle();
 
         extras.putInt(Notification.EXTRA_ID, options.getId());
@@ -226,7 +227,7 @@ public final class Builder {
      */
     private void applyStyle(NotificationCompat.Builder builder) {
         Message[] messages = options.getMessages();
-        String summary     = options.getSummary();
+        String summary = options.getSummary();
 
         if (messages != null) {
             applyMessagingStyle(builder, messages);
@@ -267,7 +268,7 @@ public final class Builder {
      * @param messages The messages to add to the conversation.
      */
     private void applyMessagingStyle(NotificationCompat.Builder builder,
-                                     Message[] messages) {
+            Message[] messages) {
 
         NotificationCompat.MessagingStyle style;
 
@@ -288,11 +289,11 @@ public final class Builder {
      * @param pics    The pictures to show.
      */
     private void applyBigPictureStyle(NotificationCompat.Builder builder,
-                                      List<Bitmap> pics) {
+            List<Bitmap> pics) {
 
         NotificationCompat.BigPictureStyle style;
         String summary = options.getSummary();
-        String text    = options.getText();
+        String text = options.getText();
 
         style = new NotificationCompat.BigPictureStyle(builder)
                 .setSummaryText(summary == null ? text : summary)
@@ -342,7 +343,7 @@ public final class Builder {
      * @param token   The media session token.
      */
     private void applyMediaStyle(NotificationCompat.Builder builder,
-                                 MediaSessionCompat.Token token) {
+            MediaSessionCompat.Token token) {
         MediaStyle style;
 
         style = new MediaStyle(builder)
@@ -373,8 +374,9 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
+        int pendingIntentValueFLAG = PendingIntentUtil.getPendingIntentFlag(FLAG_UPDATE_CURRENT);
         PendingIntent deleteIntent = PendingIntent.getBroadcast(
-                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+                context, reqCode, intent, pendingIntentValueFLAG);
 
         builder.setDeleteIntent(deleteIntent);
     }
@@ -402,8 +404,9 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
+        int pendingIntentValueFLAG = PendingIntentUtil.getPendingIntentFlag(FLAG_UPDATE_CURRENT);
         PendingIntent contentIntent = PendingIntent.getService(
-                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+                context, reqCode, intent, pendingIntentValueFLAG);
 
         builder.setContentIntent(contentIntent);
     }
@@ -413,7 +416,7 @@ public final class Builder {
      *
      * @param builder Local notification builder instance.
      */
-    private void applyActions (NotificationCompat.Builder builder) {
+    private void applyActions(NotificationCompat.Builder builder) {
         Action[] actions = options.getActions();
         NotificationCompat.Action.Builder btn;
 
@@ -421,9 +424,9 @@ public final class Builder {
             return;
 
         for (Action action : actions) {
-             btn = new NotificationCompat.Action.Builder(
-                     action.getIcon(), action.getTitle(),
-                     getPendingIntentForAction(action));
+            btn = new NotificationCompat.Action.Builder(
+                    action.getIcon(), action.getTitle(),
+                    getPendingIntentForAction(action));
 
             if (action.isWithInput()) {
                 btn.addRemoteInput(action.getInput());
@@ -439,7 +442,7 @@ public final class Builder {
      *
      * @param action Notification action needing the PendingIntent
      */
-    private PendingIntent getPendingIntentForAction (Action action) {
+    private PendingIntent getPendingIntentForAction(Action action) {
         Intent intent = new Intent(context, clickActivity)
                 .putExtra(Notification.EXTRA_ID, options.getId())
                 .putExtra(Action.EXTRA_ID, action.getId())
@@ -452,8 +455,9 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
+        int pendingIntentValueFLAG = PendingIntentUtil.getPendingIntentFlag(FLAG_UPDATE_CURRENT);
         return PendingIntent.getService(
-                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+                context, reqCode, intent, pendingIntentValueFLAG);
     }
 
     /**
